@@ -27,3 +27,11 @@ CreateMapPackage:Namespace=B360,Name=SDS,Database=ISCCODE
 CreateMapPackage:Namespace=B360,Name=UnitTest,Database=ISCUNITTESTS
 CreateMapPackage:Namespace=B360,Name=B360.Saml2.Login,Database=CUSTOMCODE
 CreateMapPackage:Namespace=B360,Name=B360.OAuth2.Login,Database=CUSTOMCODE
+CreateMapRoutine:Namespace=B360,Name=ZAUTHENTICATE,Database=ISCCODE
+CreateMapRoutine:Namespace=B360,Name=ZMIRROR,Database=ISCCODE
+CreateMapRoutine:Namespace=B360,Name=ZSTU,Database=ISCCODE
+
+CreateMapPackage:Namespace=%SYS,Name=B360.Util.StartupCallbacks,Database=ISCCODE
+CreateMapRoutine:Namespace=%SYS,Name=ZAUTHENTICATE,Database=ISCCODE
+CreateMapRoutine:Namespace=%SYS,Name=ZMIRROR,Database=ISCCODE
+CreateMapRoutine:Namespace=%SYS,Name=ZSTU,Database=ISCCODE
