@@ -22,7 +22,7 @@ You may also need to reach out to your **Sales Executive** to obtain the require
 # Versions of softwares on Total View:
 
 This version of Total View uses the following versions of:
-* InterSystems IRIS: 2023.3.3
+* InterSystems IRIS: 2024.3
 * AtScale: 2022.3.2.5281
 
 # Inventory of files and scripts you can use
