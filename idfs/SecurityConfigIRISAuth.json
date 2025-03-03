@@ -74,6 +74,18 @@
                     "resourcePermission": "R"
                 },
                 {
+                    "resourceName": "SDS_SEMANTIC_SEARCH",
+                    "resourcePermission": "U"
+                },
+                {
+                    "resourceName": "SDS_SEMANTIC_SEARCH",
+                    "resourcePermission": "R"
+                },
+                {
+                    "resourceName": "SDS_SEMANTIC_SEARCH",
+                    "resourcePermission": "W"
+                },
+                {
                     "resourceName": "SDS_TRAINING",
                     "resourcePermission": "W"
                 },
@@ -88,14 +100,6 @@
                 {
                     "resourceName": "SDS_SNAPSHOT",
                     "resourcePermission": "W"
-                },
-                {
-                    "resourceName": "%Ens_Portal",
-                    "resourcePermission": "U"
-                },
-                {
-                    "resourceName": "%Ens_MessageTrace",
-                    "resourcePermission": "U"
                 },
                 {
                     "resourceName": "%Ens_EventLog",
@@ -184,6 +188,10 @@
                 {
                     "resourceName": "SDS_STREAMING",
                     "resourcePermission": "U"
+                },
+                {
+                  "resourceName": "SDS_DASHBOARDS",
+                  "resourcePermission": "R"
                 }
             ]
         }

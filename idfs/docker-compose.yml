@@ -15,7 +15,6 @@ services:
     - TV_ENCRYPTION_MODE=INSECURE
     command: --key /tmp/iris.key 
     ports:
-    - "${CONF_IRIS_LOCAL_WEB_PORT}:52773" 
     - "${CONF_IRIS_LOCAL_JDBC_PORT}:1972" 
     volumes:
     - type: bind
@@ -83,6 +82,25 @@ services:
     networks: 
       - default
 
+  # This webgateway exists only so people can access the System Management Portal if needed
+  # We removed access to the Management Portal from the frontend container
+  smp-webgateway:
+    image: irepo.intersystems.com/intersystems/webgateway:2024.3
+    init: true
+    container_name: smp-webgateway
+    hostname: smp-webgateway
+    environment:
+      - ISC_CSP_INI_FILE=/webgateway-shared/CSP.ini
+      - ISC_CSP_CONF_FILE=/webgateway-shared/CSP.conf
+    volumes:
+    - type: bind
+      source: ./smp-webgateway-CSP.conf
+      target: /webgateway-shared/CSP.conf
+    - type: bind
+      source: ./smp-webgateway-CSP.ini
+      target: /webgateway-shared/CSP.ini
+    ports:
+    - "${CONF_IRIS_LOCAL_WEB_PORT}:80"
 
 volumes:
   iris-durable-volume:

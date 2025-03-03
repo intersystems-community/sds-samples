@@ -1,8 +1,8 @@
-# InterSystems Total View in a box
+# InterSystems Data Fabric Studio in a Box
 
-Total View is an InterSystems Product that can run as a Smart Data Service in Kubernetes or as a set of individual containers running as a docker composition on your local PC. 
+InterSystems Data Fabric Studio can run as a Smart Data Service in Kubernetes or as a set of individual containers running as a docker composition on your local PC. 
 
-This guide will help you deploy InterSystems Total View on your local PC using docker and a docker compose file. 
+This guide will help you deploy InterSystems Data Fabric Studio on your local PC using docker and a docker compose file. 
 
 Here is what you will need:
 * If you are using Windows, **you must** [install Git](https://git-scm.com/download/win) and use GitBash as your shell (instead of cmd or powershell). **Make sure you start GitBash as an administrator!**
@@ -19,9 +19,9 @@ You may also need to reach out to your **Sales Executive** to obtain the require
 
 **THIS COMPOSITION IS FOR EVALUATION PURPOSES ONLY. IT SHOULD NOT BE INSTALLED ON PRODUCTION SYSTEMS.**
 
-# Versions of softwares on Total View:
+# Versions of softwares on Data Fabric Studio:
 
-This version of Total View uses the following versions of:
+This version of Data Fabric Studio uses the following versions of:
 * InterSystems IRIS: 2024.3
 * AtScale: 2022.3.2.5281
 
@@ -38,7 +38,7 @@ Here is a description of the contents of this repository that are useful to you:
 | `logs.sh`                     | Script used to follow the logs of the running composition. |
 | `VERSION`                     | File that contains the version of the product on the current branch |
 | iris-volumes/DurableSYS       | This is where the `dur` folder of Durable %SYS of InterSystems IRIS will be created when the container starts. That is what allows you to stop/start your containers without losing your data. |
-| ./iris-volumes/files-dir       | When using Total View FileDir Data Source connector, you will be able to see your file dir data sources folders being created here. You will also be able to drop files on the `Samples` and `Source` folders to test adding them to the Total View data catalog ingesting them on a Total View Recipe |
+| ./iris-volumes/files-dir       | When using Data Fabric Studio FileDir Data Source connector, you will be able to see your file dir data sources folders being created here. You will also be able to drop files on the `Samples` and `Source` folders to test adding them to the Data Fabric Studio data catalog ingesting them on a Data Fabric Studio Recipe |
 | ./irisaa-volumes/home-atscale | In case you need to export/import a file from/into AtScale, you can put it on this folder and it will be visible by AtScale on the folder /home/atscale inside the container |
 | `CONF_IRIS_LOCAL_WEB_PORT`    | Local port used to reach the IRIS management portal. Default is 42773 which means that the management portal will be at http://localhost:42773/csp/sys/UtilHome.csp |
 | `CONF_IRIS_LOCAL_JDBC_PORT`   | Local port used to reach the IRIS SuperServer. Default is 41972. Which means that the default JDBC URL will be jdbc:IRIS://localhost:41972/B360 |
@@ -47,17 +47,17 @@ Here is a description of the contents of this repository that are useful to you:
 | `CONF_DOCKER_GTW`             | The IPv4 gateway to be used when creating the docker network for this docker-compose project The default is 172.20.0.1. |
 
 
-# Starting the Total View composition
+# Starting the Data Fabric Studio composition
 
 Make sure you pick the right IRIS license for your platform. If your machine is a Mac M1/M2, you will need an ARM IRIS license and it must be put on the file `./licenses/iris.key`.
 
 Make sure you have an AtScale License on file `./licenses/AtScaleLicense.json`.
 
-In order to start InterSystems Total View (frontend, iris and iris adaptive analytics), run the `./start.sh` script.
+In order to start InterSystems Data Fabric Studio (frontend, iris and iris adaptive analytics), run the `./start.sh` script.
 
 The composition will start in the background. You can use the `logs-all.sh` script to follow its logs. This script will show you the logs of the three containers running (Frontend, InterSystems IRIS and AtScale). If you want to look at the logs of a specific container, call the appropriate `logs-*.sh` script for it.
 
-The frontend should start very quickly, but it needs InterSystems IRIS to be running in order for it to work. So if you are in a hurry, you may want to use the `logs-iris.sh` to follow the InterSystems IRIS logs. The following message will be the indicator that you can open Total View and start working with it:
+The frontend should start very quickly, but it needs InterSystems IRIS to be running in order for it to work. So if you are in a hurry, you may want to use the `logs-iris.sh` to follow the InterSystems IRIS logs. The following message will be the indicator that you can open Data Fabric Studio and start working with it:
 
 ```
 [INFO] ...started InterSystems IRIS instance IRIS
@@ -68,21 +68,21 @@ OBS: You can ignore some errors that follow the message above about RabbitMQ and
 Here is the list of endpoints and credentials that you can use:
 
 | What | Where | Username | Default Password |
-|------------------------|---------------------------------------------|-------------|-------|
-| IRIS Management Portal | http://localhost:42773/csp/sys/UtilHome.csp | SuperUser   | sys   |
-| Total View             | http://localhost:8081                       | SystemAdmin | sys   |
-| AtScale Administration | http://localhost:10500                      | admin       | admin |
-| JDBC Access to IRIS    | jdbc:IRIS://localhost:41972/B360            | SystemAdmin | sys   |
-| JDBC Access to AtScale | jdbc:hive2://localhost:11111/project_name   | admin       | admin |
-| MDX A |             | admin       | admin |
+|-------------------------|---------------------------------------------|-------------|-------|
+| IRIS Management Portal  | http://localhost:42773/csp/sys/UtilHome.csp | SuperUser   | sys   |
+| Data Fabric Studio      | http://localhost:8081                       | SystemAdmin | sys   |
+| AtScale Administration  | http://localhost:10500                      | admin       | admin |
+| JDBC Access to IRIS     | jdbc:IRIS://localhost:41972/B360            | SystemAdmin | sys   |
+| JDBC Access to AtScale  | jdbc:hive2://localhost:11111/project_name   | admin       | admin |
+| MDX A                   |                                             | admin       | admin |
 
 **WARNING:** We left AtScale commented out of the composition to save on resources. If you need it, uncoment its service in the composition and start it again.
   
-# Connecting to Total View using JDBC
+# Connecting to Data Fabric Studio using JDBC
 
-We recommend using [DBEaver](https://dbeaver.io/download/) to connect to Total View and work on your target data model. DBEaver brings the InterSystems IRIS JDBC driver already and you should be able to install it and get it connected to InterSystems IRIS in no time.
+We recommend using [DBEaver](https://dbeaver.io/download/) to connect to Data Fabric Studio and work on your target data model. DBEaver brings the InterSystems IRIS JDBC driver already and you should be able to install it and get it connected to InterSystems IRIS in no time.
 
-It is possible to access the InterSystems IRIS Management Portal but you should avoid it and there should be no need for that. Total View will actually let you use a small portion of the InterSystems IRIS Management Portal (the SQL Explorer) from inside Total View itself. You should never need to open up the InterSystems IRIS Management Portal directly.
+It is possible to access the InterSystems IRIS Management Portal but you should avoid it and there should be no need for that. Data Fabric Studio will actually let you use a small portion of the InterSystems IRIS Management Portal (the SQL Explorer) from inside Data Fabric Studio itself. You should never need to open up the InterSystems IRIS Management Portal directly.
 
 For JDBC, use the 'SuperUser' credentials mentioned above.
 
@@ -129,7 +129,7 @@ GROUP BY `Internet Sales Cube`.`Order Month`
 
 **TODO: I don't have tableau or a tableau license to test and document this. I need help.**
 
-# Stopping the Total View Composition
+# Stopping the Data Fabric Studio Composition
 
 You can use the `./stop.sh` script to bring the three containers down and pause them. This will not remove their durable data. You should be able to resume the work by running the `./start.sh` script again.
 
@@ -149,7 +149,7 @@ This composition is exposing the IRIS Web Server Port at your local port 42773. 
                 "host": "127.0.0.1",
                 "port": 42773
             },
-            "description": "Total View in a box on your local PC"
+            "description": "Data Fabric Studio in a box on your local PC"
         },
 ```
 
