@@ -10,5 +10,5 @@
 *.deb
 
 # Licenses
-**/iris.key
+**/*.key
 **/AtScaleLicense.json

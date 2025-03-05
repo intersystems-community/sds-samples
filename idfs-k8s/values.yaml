@@ -1,0 +1,59 @@
+# Default values for sds-control-plane.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+deploymentType: test
+
+compute:
+  database:
+    nodeTypeSelector: ""
+    cpu: 2
+    memory: 512Mi
+  frontend:
+    nodeTypeSelector: ""
+    cpu: 2
+    memory: 512Mi
+
+# Used to specify the storage required for totalview
+storageDB:
+  size : 2Gi
+  storageClass : local-path
+storageWIJ:
+  size: 2Gi
+  storageClass : local-path
+storageJournal1:
+  size: 2Gi
+  storageClass : local-path
+storageJournal2:
+  size: 2Gi
+  storageClass : local-path
+storageData:
+  size : 2Gi
+  storageClass : local-path
+
+
+mirrored: "false"
+atscaleinstall: false
+
+# These are the secret fields needed to successfully deploy.
+# They will be injected by the control plane:
+requiredSecrets:
+  irisLicense: iris-key-secret
+  intersystemsContainerRegistrySecret: intersystems-container-registry-secret
+
+
+superServer:
+  enabled: "false"
+  hostname: "localhost"
+  port: "10000"
+
+ui:
+  enabled: "false"
+  hostname: "localhost"
+  port: "10002"
+  ingress:
+    enabled: true
+    hostname: "localhost"
+    tlsEnabled: false
+    tls:
+      clusterIssuer: sds-selfsigned-cluster-issuer
