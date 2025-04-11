@@ -43,7 +43,7 @@ fi
 
 if [ ! -f ./licenses/AtScaleLicense.json ];
 then
-    exit_with_error "Could not find file './licenses/AtScaleLicense.json'. "
+    warn "Could not find file './licenses/AtScaleLicense.json'. If you are using AtScale, please make sure to copy the license file to this location."
 fi
 
 # trace "Making sure ./iris-volumes has the files-dir folder"
