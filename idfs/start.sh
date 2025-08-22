@@ -63,6 +63,8 @@ then
     chmod og+rwx ./irisaa-volumes/home-atscale
 fi
 
+docker network rm business-360_default
+
 # trace "Starting the composition..."
 docker compose up --remove-orphans -d
 exit_if_error "Could not start composition."

@@ -102,16 +102,8 @@
                     "resourcePermission": "W"
                 },
                 {
-                    "resourceName": "%Ens_EventLog",
-                    "resourcePermission": "U"
-                },
-                {
-                    "resourceName": "%Ens_MessageContent",
-                    "resourcePermission": "U"
-                },
-                {
-                    "resourceName": "%Ens_MessageHeader",
-                    "resourcePermission": "U"
+                    "resourceName": "SDS_SNAPSHOT_DELETE",
+                    "resourcePermission": "W"
                 },
                 {
                     "resourceName": "SDS_SYSTEM_CONFIG",
@@ -178,6 +170,22 @@
                     "resourcePermission": "W"
                 },
                 {
+                    "resourceName": "SDS_SQL_ASSISTANT",
+                    "resourcePermission": "U"
+                },
+                {
+                    "resourceName": "SDS_RESEARCH_ASSISTANT",
+                    "resourcePermission": "W"
+                },
+                {
+                    "resourceName": "SDS_RESEARCH_ASSISTANT",
+                    "resourcePermission": "R"
+                },
+                {
+                    "resourceName": "SDS_MANAGEMENT_PORTAL",
+                    "resourcePermission": "R"
+                },
+                {
                     "resourceName": "SDS_STREAMING",
                     "resourcePermission": "R"
                 },
@@ -192,6 +200,14 @@
                 {
                   "resourceName": "SDS_DASHBOARDS",
                   "resourcePermission": "R"
+                },
+                {
+                    "resourceName": "SDS_DATAMODEL_MARKETPLACE",
+                    "resourcePermission": "R"
+                },
+                {
+                    "resourceName": "SDS_DATAMODEL_MARKETPLACE",
+                    "resourcePermission": "W"
                 }
             ]
         }
@@ -212,15 +228,32 @@
             "resourceType": "Capability",
             "adminPrivileges": [
 
-                "%BUILD_INDEX"
+                "%ALTER_TABLE",
+                "%ALTER_VIEW",
+                "%BUILD_INDEX",
+                "%CREATE_TABLE",
+                "%CREATE_VIEW",
+                "%DROP_TABLE",
+                "%DROP_VIEW"
             ],
             "objectPrivileges": "USE"
         },
         {
-            "roleName": "System Administrator",
-            "resourceType": "Table",
-            "objectPrivileges": "SELECT",
-            "objectList": "Ens.MessageBody,Ens.MessageHeader"
+            "roleName": "",
+            "resourceType": "Capability",
+            "adminPrivileges": [
+                "%CREATE_FUNCTION",
+                "%CREATE_METHOD",
+                "%CREATE_PROCEDURE",
+                "%CREATE_QUERY",
+                "%CREATE_TRIGGER",
+                "%DROP_FUNCTION",
+                "%DROP_METHOD",
+                "%DROP_PROCEDURE",
+                "%DROP_QUERY",
+                "%DROP_TRIGGER"
+            ],
+            "objectPrivileges": ""
         }
     ]
 }
