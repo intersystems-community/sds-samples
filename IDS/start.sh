@@ -41,11 +41,6 @@ then
     exit_with_error "Could not find file './licenses/iris.key'."
 fi
 
-if [ ! -f ./licenses/AtScaleLicense.json ];
-then
-    warn "Could not find file './licenses/AtScaleLicense.json'. If you are using AtScale, please make sure to copy the license file to this location."
-fi
-
 # trace "Making sure ./iris-volumes has the files-dir folder"
 if [ ! -d ./iris-volumes/files-dir ];
 then
@@ -56,14 +51,7 @@ fi
 # trace "Making sure ./irisaa-volumes can be writable for other users so that atscale inside the container can create its conf and data folders..."
 chmod o+rwx ./iris-volumes
 
-# trace "Making sure ./irisaa-volumes has the home-atscale folder"
-if [ ! -d ./irisaa-volumes/home-atscale ];
-then
-    mkdir -p ./irisaa-volumes/home-atscale
-    chmod og+rwx ./irisaa-volumes/home-atscale
-fi
-
-docker network rm business-360_default
+docker network rm ids_default
 
 # trace "Starting the composition..."
 docker compose up --remove-orphans -d
@@ -71,4 +59,3 @@ exit_if_error "Could not start composition."
 
 msg "Total View Composition started."
 msg "You may want to use some of the logs-*.sh scripts to see if all the containers have finished starting."
-msg "If it is uncommented in the composition, AtScale, will take a couple of minutes to be ready."

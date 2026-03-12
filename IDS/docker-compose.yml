@@ -33,40 +33,6 @@ services:
     networks: 
       - default
 
-  # business360-irisaa:
-  #   image: irepo.intersystems.com/sds-docker-dev/totalview/irisaa:${VERSION}
-  #   init: true
-  #   hostname: business360-irisaa
-  #   cap_add:
-  #     - IPC_LOCK
-  #   security_opt:             # For a demo, this is ok and will provide for more performance. Maybe it is not necessary with privileged:true bellow
-  #     - seccomp:unconfined
-  #   privileged: true          # For a demo, this is ok and will provide for more performance.
-  #   environment: 
-  #     ATSCALE_LB_DNS_NAME: "localhost" # Because we will be opening AtScale on our browsers using localhost
-  #     DNS_NAME: "business360-irisaa"
-  #     IRIS_JDBC_URL: jdbc:IRIS://business360-iris:1972/B360
-  #     IRIS_USER: SuperUser
-  #     IRIS_PASSWORD: sys
-  #     IRIS_CONNECTION_NAME: business360
-  #     IRIS_AGGREGATE_SCHEMA: agg
-  #   ports:
-  #     - "10500-10520:10500-10520"
-  #     - 11111:11111
-  #   volumes:
-  #     - irisaa-data:/opt/atscale/data        # Using named volumes instead of binds 
-  #     - irisaa-conf:/opt/atscale/conf        # so that Windows users can start AtScale on their machines
-  #     - irisaa-log:/opt/atscale/log
-  #     - type: bind                           # These must be normal bind volumes because we need to share
-  #       source: ./licenses                   # the license on our machine with AtScale running on the container
-  #       target: /etc/atscale-license-secret
-  #     - type: bind
-  #       source: ./irisaa-volumes/home-atscale
-  #       target: /home/atscale
-
-  #   networks: 
-  #     - default
-
   business360-frontend:
     image: irepo.intersystems.com/sds-docker-dev/totalview/frontend:${VERSION}
     hostname: business360-frontend
