@@ -9,7 +9,7 @@ Here is what you will need:
 * A machine with at least 32GiB of RAM and 8 physical cores (16 logical cores)
 * Docker installed on your machine configured to have access to at least 10 GiB of RAM and 8 logical cores
 * Licenses and Credentials you must get from InterSystems:
-  * An IRIS Advanced Server License (server license, not concurrent user license) - You can get one from the [Evaluation Service](https://evaluation.intersystems.com). Make sure you get a license for **InterSystems IRIS Advanced Server Running on Ubuntu Containers for x86**.
+  * An IRIS Advanced Server License (server license, not concurrent user license) - You can get one from the [Evaluation Service](https://evaluation.intersystems.com). Make sure you get a license for **InterSystems IRIS Advanced Server Running on Ubuntu Containers for your platform (x86 or ARM)**.
   * An account with InterSystems so you can access our container registry at https://irepo.intersystems.com
 
 Feel free to ask your **Sales Engineer** to help you with the technical requirements above if you have any issues.
