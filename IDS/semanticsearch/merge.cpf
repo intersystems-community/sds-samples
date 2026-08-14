@@ -1,0 +1,17 @@
+[Journal]
+CurrentDirectory=/volumes/dur/journal1/
+AlternateDirectory=/volumes/dur/journal2/
+
+[config]
+wijdir=/volumes/dur/wij/
+
+[Startup]
+PasswordHash=6364e7d79b28f81071a7a26d7a67aa83c9f95e41ececeaf16d06a47e9f330e82be096329adf3b1a5d66a8768417ad354871c45a4cedb4f33b627c81c3f25aab3,68606183143c7a67f9ab24924ad37f223780f99c3444d03c2c198c7fdc3c8282b44a93140a29c7a69224e0f30653cd8ae3e62d8b0e9fb59f7abafac1f4fc6cd5,10000,SHA512
+
+[Actions]
+CreateDatabase:Name=VECTORDBCODE,Directory=/volumes/dur/mgr/vectordbcode/
+CreateDatabase:Name=VECTORDBDATA,Directory=/volumes/dur/mgr/vectordbdata/
+CreateNamespace:Name=VECTORDB,Globals=VECTORDBDATA,Routines=VECTORDBCODE
+CreateRole:Name=VECTOR_DB_ROLE,Resources=%DB_%DEFAULT:RW
+GrantAdminPrivilege:AdminPriv=%ALTER_TABLE,%CREATE_TABLE,%DROP_TABLE,Grantee=VECTOR_DB_ROLE,Namespace=VECTORDB
+CreateUser:Name=vectordb,PasswordHash="6364e7d79b28f81071a7a26d7a67aa83c9f95e41ececeaf16d06a47e9f330e82be096329adf3b1a5d66a8768417ad354871c45a4cedb4f33b627c81c3f25aab3,68606183143c7a67f9ab24924ad37f223780f99c3444d03c2c198c7fdc3c8282b44a93140a29c7a69224e0f30653cd8ae3e62d8b0e9fb59f7abafac1f4fc6cd5,10000,SHA512",Roles=VECTOR_DB_ROLE

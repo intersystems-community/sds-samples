@@ -4,6 +4,10 @@ services:
   business360-iris: 
     image: irepo.intersystems.com/sds-docker-dev/totalview/iris:${VERSION}
     hostname: business360-iris
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+    #   - "kafka1:${CONF_KAFKA_HOST}"
+    #   - "schemaregistry:${CONF_KAFKA_HOST}"
     cap_add:
       - IPC_LOCK
     security_opt:             
@@ -13,6 +17,10 @@ services:
     - ISC_CPF_MERGE_FILE=/tmp/merge.cpf
     - ISC_DATA_DIRECTORY=/volumes/dur
     - TV_ENCRYPTION_MODE=INSECURE
+    - SEMANTIC_SEARCH_DEFAULT_CONNECTION=semantic-search-webgateway:80
+    - SEMANTIC_SEARCH_JDBC_URL=semantic-search-iris:1972
+    - PDF_CHUNKER_DEFAULT_CONNECTION=http://semantic-search-pdf-parser:5001/api
+    - CONF_SEMANTIC_SEARCH_LLM_ORCH_IMAGE_TAG=${CONF_SEMANTIC_SEARCH_LLM_ORCH_IMAGE_TAG}
     command: --key /tmp/iris.key 
     ports:
     - "${CONF_IRIS_LOCAL_JDBC_PORT}:1972" 
@@ -30,8 +38,20 @@ services:
       source: ./iris-merge.cpf
       target: /tmp/merge.cpf
     - iris-durable-volume:/volumes           # Using named volumes instead of binds
+    # - type: bind
+    #   source: ./iris/image/java_src/target/dataloader-final-shaded.jar
+    #   target: /intersystems/java_dependencies/dataloader.jar
+    # - type: bind
+    #   source: ./iris/image/iris_src/python/
+    #   target: /intersystems/python
     networks: 
       - default
+    healthcheck:
+      test: ["CMD", "/irisHealth.sh"]
+      interval: 5s
+      retries: 100
+      start_period: 20s
+      timeout: 600s
 
   business360-frontend:
     image: irepo.intersystems.com/sds-docker-dev/totalview/frontend:${VERSION}
@@ -44,14 +64,13 @@ services:
     init: true
     ports:
     - "${CONF_FRONTEND_LOCAL_PORT}:80"
-
     networks: 
       - default
 
   # This webgateway exists only so people can access the System Management Portal if needed
   # We removed access to the Management Portal from the frontend container
   smp-webgateway:
-    image: irepo.intersystems.com/intersystems/webgateway:2024.3
+    image: irepo.intersystems.com/sds-docker-dev/totalview/webgateway:${VERSION}
     init: true
     container_name: smp-webgateway
     hostname: smp-webgateway
@@ -67,12 +86,83 @@ services:
       target: /webgateway-shared/CSP.ini
     ports:
     - "${CONF_IRIS_LOCAL_WEB_PORT}:80"
+    networks:
+      - default
+
+  semantic-search-orchestrator:
+    image: irepo.intersystems.com/sds-docker-dev/totalview/orch:${VERSION}
+    container_name: semantic-search-orchestrator
+    hostname: semantic-search-orchestrator
+    restart: always
+    depends_on:
+      business360-iris:
+        condition: service_healthy
+      semantic-search-iris:
+        condition: service_healthy
+    environment:
+    - IDFS_HOST=business360-iris
+    - IDFS_PORT=1972
+    - IDFS_SERVICE_ACCOUNT_USER=orchestrator
+    # - DEBUGGER_METHOD=Langfuse
+    # - LANGFUSE_HOST=http://langfuse-web:3000
+    # - LANGFUSE_PUBLIC_KEY=pk-1234567890
+    # - LANGFUSE_SECRET_KEY=sk-1234567890
+    # - LANGFUSE_ACCESS_URL=http://localhost:8484
+    ports:
+      - "38080:38080"
+    volumes:
+      - type: bind
+        source: ./SecurityConfigIRISAuth.json
+        target: /etc/config/security/SecurityConfig.json
+
+  semantic-search-iris:
+    image: irepo.intersystems.com/sds-docker-dev/totalview/vectordb:${VERSION}
+    container_name: semantic-search-iris
+    hostname: semantic-search-iris
+    restart: always
+    ports:
+      - "1972:1972"
+    environment:
+      - ISC_DATA_DIRECTORY=/volumes/dur
+      - ISC_CPF_MERGE_FILE=/iris-config/merge.cpf
+    command: --key /tmp/iris.key
+    volumes:
+      - type: bind
+        source: ./licenses/iris.key
+        target: /tmp/iris.key
+      - type: bind
+        source: semanticsearch/merge.cpf
+        target: /iris-config/merge.cpf
+      - type: bind
+        source: ./semanticsearch/volumes
+        target: /volumes
+    healthcheck:
+      test: ["CMD", "iris", "session", "IRIS", "-U", "VECTORDB", "##class(%Dictionary.ClassDefinition).%Exists(\"%Dictionary.ClassDefinition\")"]
+      interval: 5s
+      retries: 100
+      start_period: 20s
+      timeout: 600s
+
+  semantic-search-webgateway:
+    image: irepo.intersystems.com/sds-docker-dev/totalview/vectordb-webgateway:${VERSION}
+    init: true
+    container_name: semantic-search-webgateway
+    hostname: semantic-search-webgateway
+    environment:
+      - ISC_CSP_INI_FILE=/webgateway-configs/CSP.ini
+      - ISC_CSP_CONF_FILE=/webgateway-configs/CSP.conf
+    volumes:
+    - type: bind
+      source: semanticsearch/webgateway/CSP.conf
+      target: /webgateway-configs/CSP.conf
+    - type: bind
+      source: semanticsearch/webgateway/CSP.ini
+      target: /webgateway-configs/CSP.ini
+    ports:
+    - "${CONF_SEMANTIC_SEARCH_LOCAL_WEB_PORT}:80"
 
 volumes:
   iris-durable-volume:
-  irisaa-data:
-  irisaa-conf:
-  irisaa-log:
 
 networks:
   default:

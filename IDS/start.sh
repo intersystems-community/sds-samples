@@ -48,6 +48,12 @@ then
     chmod og+rwx ./iris-volumes/files-dir
 fi
 
+if [ ! -d ./semanticsearch/volumes ];
+then
+    mkdir -p ./semanticsearch/volumes
+    chmod og+rwx ./semanticsearch/volumes
+fi
+
 # trace "Making sure ./irisaa-volumes can be writable for other users so that atscale inside the container can create its conf and data folders..."
 chmod o+rwx ./iris-volumes
 

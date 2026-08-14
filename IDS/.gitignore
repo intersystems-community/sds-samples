@@ -18,6 +18,9 @@ iris-volumes/DurableSYS
 iris-volumes/files-dir
 iris-volumes/generated-files
 
+# Search
+semanticsearch/volumes/*
+
 # Licenses
 licenses/iris.key
 licenses/AtScaleLicense.json
