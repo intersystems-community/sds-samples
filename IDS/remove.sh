@@ -7,6 +7,7 @@ source ./conf.sh
 COMPOSE_FILES="-f docker-compose.yml"
 if [ -f docker-compose.langfuse.yml ]; then
   COMPOSE_FILES="$COMPOSE_FILES -f docker-compose.langfuse.yml"
+  source ./export-langfuse-config.sh
 fi
 
 trace "Removing containers..."
