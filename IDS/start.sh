@@ -2,6 +2,13 @@
 
 source ./utils.sh
 
+DEPLOY_LANGFUSE=true
+if [ "$1" == "lf" ]; then
+  DEPLOY_LANGFUSE=true
+elif [ "$1" == "nolf" ]; then
+  DEPLOY_LANGFUSE=false
+fi
+
 msg "Starting Total View Composition..."
 
 if [ ! -f ./CONF_DOCKER_GTW ];
@@ -36,6 +43,28 @@ fi
 
 source ./conf.sh
 
+if [ "$DEPLOY_LANGFUSE" == "true" ]; then
+  LANGFUSE_CONFIG_FILE="./semanticsearch/langfuse.yaml"
+  if [ ! -f "$LANGFUSE_CONFIG_FILE" ]; then
+    exit_with_error "Configuration file $LANGFUSE_CONFIG_FILE not found!"
+  fi
+
+  while IFS=":" read -r key value; do
+    key=$(echo "$key" | xargs)
+    value=$(echo "$value" | xargs)
+    if [[ -z "$key" || "$key" == \#* ]]; then
+      continue
+    fi
+    value=$(echo "$value" | sed -e 's/^"//' -e 's/"$//')
+    export "$key"="$value"
+  done < "$LANGFUSE_CONFIG_FILE"
+
+  export REDIS_PORT=$REDIS_PORT_EXTERNAL
+  export CONF_LANGFUSE_INIT_USER_NAME=$CONF_LANGFUSE_INITIAL_USER_NAME
+  export DEBUGGER_METHOD="Langfuse"
+  msg "Langfuse deployment enabled."
+fi
+
 if [ ! -f ./licenses/iris.key ];
 then
     exit_with_error "Could not find file './licenses/iris.key'."
@@ -59,8 +88,18 @@ chmod o+rwx ./iris-volumes
 
 docker network rm ids_default
 
+COMPOSE_FILES="-f docker-compose.yml"
+if [ "$DEPLOY_LANGFUSE" == "true" ]; then
+  COMPOSE_FILES="$COMPOSE_FILES -f docker-compose.langfuse.yml"
+fi
+
+REMOVE_ORPHANS=""
+if [ "$DEPLOY_LANGFUSE" == "true" ]; then
+  REMOVE_ORPHANS="--remove-orphans"
+fi
+
 # trace "Starting the composition..."
-docker compose up --remove-orphans -d
+docker compose $COMPOSE_FILES up --quiet-pull $REMOVE_ORPHANS -d
 exit_if_error "Could not start composition."
 
 msg "Total View Composition started."

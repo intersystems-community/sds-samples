@@ -103,11 +103,11 @@ services:
     - IDFS_HOST=business360-iris
     - IDFS_PORT=1972
     - IDFS_SERVICE_ACCOUNT_USER=orchestrator
-    # - DEBUGGER_METHOD=Langfuse
-    # - LANGFUSE_HOST=http://langfuse-web:3000
-    # - LANGFUSE_PUBLIC_KEY=pk-1234567890
-    # - LANGFUSE_SECRET_KEY=sk-1234567890
-    # - LANGFUSE_ACCESS_URL=http://localhost:8484
+    - DEBUGGER_METHOD=${DEBUGGER_METHOD:-}  # must be set to "Langfuse" to use debugging
+    - LANGFUSE_HOST=http://langfuse-web:3000
+    - LANGFUSE_PUBLIC_KEY=pk-1234567890
+    - LANGFUSE_SECRET_KEY=sk-1234567890
+    - LANGFUSE_ACCESS_URL=http://localhost:8484
     ports:
       - "38080:38080"
     volumes:

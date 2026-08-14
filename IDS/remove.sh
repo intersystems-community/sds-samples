@@ -4,8 +4,13 @@ source ./utils.sh
 
 source ./conf.sh
 
+COMPOSE_FILES="-f docker-compose.yml"
+if [ -f docker-compose.langfuse.yml ]; then
+  COMPOSE_FILES="$COMPOSE_FILES -f docker-compose.langfuse.yml"
+fi
+
 trace "Removing containers..."
-docker compose rm -f
+docker compose $COMPOSE_FILES rm -f
 
 trace "Cleaning IRIS Durable Folder"
 docker volume rm business-360_iris-durable-volume

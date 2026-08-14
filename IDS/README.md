@@ -1,6 +1,6 @@
 # InterSystems Data Studio in a Box
 
-InterSystems Data Studio can run as a Smart Data Service in Kubernetes or as a set of individual containers running as a docker composition on your local PC. 
+InterSystems Data Studio can run as a set of individual containers running as a docker composition on your local PC. 
 
 This guide will help you deploy InterSystems Data Studio on your local PC using docker and a docker compose file. 
 
@@ -20,7 +20,7 @@ You may also need to reach out to your **Sales Executive** to obtain the require
 
 # Versions of softwares on Data Studio:
 
-This version of Data Studio uses IRIS 2025.1.3.
+This version of Data Studio uses IRIS 2026.2.
 
 # Inventory of files and scripts you can use
 
@@ -34,8 +34,9 @@ Here is a description of the contents of this repository that are useful to you:
 | `remove.sh`                   | Script used to remove the containers of the composition and purge the durable folders of IRIS and IRIS Adaptive Analytics. This script can be used after switching to another branch in this Git repository so that your images will be rebuilt with the code from that branch. That is why we need to dispose of the durable data saved outside the containers. This script can also be run when the user needs to clean the durable data saved outside the container in order to start clean in the same branch. |
 | `logs.sh`                     | Script used to follow the logs of the running composition. |
 | `VERSION`                     | File that contains the version of the product on the current branch |
-| iris-volumes/DurableSYS       | This is where the `dur` folder of Durable %SYS of InterSystems IRIS will be created when the container starts. That is what allows you to stop/start your containers without losing your data. |
+| iris-volumes/DurableSYS       | This is where the `dur` folder of Durable %SYS of InterSystems IRIS will be created when the container starts, for the main IDS instance. That is what allows you to stop/start your containers without losing your data. |
 | ./iris-volumes/files-dir       | When using Data Studio FileDir Data Source connector, you will be able to see your file dir data sources folders being created here. You will also be able to drop files on the `Samples` and `Source` folders to test adding them to the Data Studio data catalog ingesting them on a Data Studio Recipe |
+| iris-volumes/DurableSYS       | This is where the `dur` folder of Durable %SYS of InterSystems IRIS will be created when the container starts, for the vector database, which is separate from the main IDS instance. |
 | `CONF_IRIS_LOCAL_WEB_PORT`    | Local port used to reach the IRIS management portal. Default is 42773 which means that the management portal will be at http://localhost:42773/csp/sys/UtilHome.csp |
 | `CONF_IRIS_LOCAL_JDBC_PORT`   | Local port used to reach the IRIS SuperServer. Default is 41972. Which means that the default JDBC URL will be jdbc:IRIS://localhost:41972/B360 |
 | `CONF_FRONTEND_LOCAL_PORT`    | Local port used to reach the Angular UI Frontend. Default is 8081. Which means that the angular UI will be at http://localhost:8081 |
@@ -62,10 +63,12 @@ OBS: You can ignore some errors that follow the message above about RabbitMQ and
 Here is the list of endpoints and credentials that you can use:
 
 | What | Where | Username | Default Password |
-|-------------------------|---------------------------------------------|-------------|-------|
-| IRIS Management Portal  | http://localhost:42773/csp/sys/UtilHome.csp | SuperUser   | sys   |
-| InterSystems Data Studio| http://localhost:8081                       | SystemAdmin | sys   |
-| JDBC Access to IRIS     | jdbc:IRIS://localhost:41972/B360            | SystemAdmin | sys   |
+|-------------------------|---------------------------------------------|------------------------|---------------------|
+| InterSystems Data Studio| http://localhost:8081                       | SystemAdmin            | sys                 |
+| IRIS Management Portal  | http://localhost:42773/csp/sys/UtilHome.csp | SuperUser              | sys                 |
+| Vector Database SMP     | http://localhost:42773/csp/sys/UtilHome.csp | SuperUser              | SYS                 |
+| JDBC Access to IRIS     | jdbc:IRIS://localhost:41972/B360            | SystemAdmin            | sys                 |
+| Langfuse                | http://localhost:8484                       | admin@intersystems.com | langfuse-idfs-admin |
 
   
 # Connecting to Data Studio using JDBC
