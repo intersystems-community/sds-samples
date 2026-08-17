@@ -70,8 +70,6 @@ fi
 # trace "Making sure ./irisaa-volumes can be writable for other users so that atscale inside the container can create its conf and data folders..."
 chmod o+rwx ./iris-volumes
 
-docker network rm ids_default
-
 COMPOSE_FILES="-f docker-compose.yml"
 if [ "$DEPLOY_LANGFUSE" == "true" ]; then
   COMPOSE_FILES="$COMPOSE_FILES -f docker-compose.langfuse.yml"

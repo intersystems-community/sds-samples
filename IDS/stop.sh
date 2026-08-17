@@ -16,4 +16,3 @@ docker compose $COMPOSE_FILES stop
 exit_if_error "Could not stop composition."
 
 msg "Total View composition stopped."
-docker network rm ids_default

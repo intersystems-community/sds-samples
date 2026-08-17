@@ -13,6 +13,9 @@ fi
 trace "Removing containers..."
 docker compose $COMPOSE_FILES rm -f
 
+trace "Removing network..."
+docker network rm ids_default 2>/dev/null
+
 trace "Cleaning IRIS Durable Folder"
 docker volume rm business-360_iris-durable-volume
 docker volume rm total-view_iris-durable-volume
