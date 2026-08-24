@@ -144,7 +144,7 @@ services:
       timeout: 600s
 
   semantic-search-webgateway:
-    image: irepo.intersystems.com/sds-docker-dev/totalview/webgateway:${VERSION}
+    image: irepo.intersystems.com/sds-docker-dev/totalview/vectordb-webgateway:${VERSION}
     init: true
     container_name: semantic-search-webgateway
     hostname: semantic-search-webgateway

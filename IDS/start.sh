@@ -80,6 +80,18 @@ if [ "$DEPLOY_LANGFUSE" == "true" ]; then
   REMOVE_ORPHANS="--remove-orphans"
 fi
 
+# Workaround: The 2026.1 webgateway entrypoint is not idempotent — on restart it
+# appends a duplicate "Listen 80" directive, causing Apache to fail. Remove the
+# container before `up` so it gets a fresh writable layer.
+WG_CONTAINER="semantic-search-webgateway"
+if docker inspect "$WG_CONTAINER" >/dev/null 2>&1; then
+  WG_VERSION=$(docker inspect "$WG_CONTAINER" --format '{{index .Config.Labels "com.intersystems.platform-version"}}' 2>/dev/null)
+  if [[ "$WG_VERSION" == 2026.1.* ]]; then
+    trace "Detected 2026.1 webgateway ($WG_VERSION) — removing container to avoid duplicate Listen directive on restart..."
+    docker rm -f "$WG_CONTAINER" >/dev/null 2>&1
+  fi
+fi
+
 # trace "Starting the composition..."
 docker compose $COMPOSE_FILES up --quiet-pull $REMOVE_ORPHANS -d
 exit_if_error "Could not start composition."
