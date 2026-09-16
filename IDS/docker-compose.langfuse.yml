@@ -99,7 +99,7 @@ services:
       - default
 
   minio:
-    image: minio/minio:RELEASE.2025-06-13T11-33-47Z
+    image: quay.io/minio/minio:RELEASE.2025-06-13T11-33-47Z
     restart: always
     entrypoint: sh
     command: -c 'mkdir -p /data/langfuse && minio server --address ":9000" --console-address ":9001" /data'
