@@ -1,7 +1,7 @@
 ---
 services:
 
-  business360-iris: 
+  business360-iris:
     image: irepo.intersystems.com/sds-docker-dev/totalview/iris:${VERSION}
     hostname: business360-iris
     # extra_hosts:
@@ -10,9 +10,9 @@ services:
     #   - "schemaregistry:${CONF_KAFKA_HOST}"
     cap_add:
       - IPC_LOCK
-    security_opt:             
+    security_opt:
       - seccomp:unconfined
-    privileged: true          
+    privileged: true
     environment:
     - ISC_CPF_MERGE_FILE=/tmp/merge.cpf
     - ISC_DATA_DIRECTORY=/volumes/dur
@@ -21,9 +21,9 @@ services:
     - SEMANTIC_SEARCH_JDBC_URL=semantic-search-iris:1972
     - PDF_CHUNKER_DEFAULT_CONNECTION=http://semantic-search-pdf-parser:5001/api
     - CONF_SEMANTIC_SEARCH_LLM_ORCH_IMAGE_TAG=${CONF_SEMANTIC_SEARCH_LLM_ORCH_IMAGE_TAG}
-    command: --key /tmp/iris.key 
+    command: --key /tmp/iris.key
     ports:
-    - "${CONF_IRIS_LOCAL_JDBC_PORT}:1972" 
+    - "${CONF_IRIS_LOCAL_JDBC_PORT}:1972"
     volumes:
     - type: bind
       source: ./licenses/iris.key
@@ -44,10 +44,14 @@ services:
     # - type: bind
     #   source: ./iris/image/iris_src/python/
     #   target: /intersystems/python
-    networks: 
+    networks:
       - default
     healthcheck:
-      test: ["CMD", "/irisHealth.sh"]
+      # The irisHealth.sh script simply checks IRIS status via the qlist command, however this is not sufficient for our purposes.
+      # Services that depend on the IRIS container's health when initializing, like the orchestrator, need to be able to connect over JDBC
+      # and run queries upon startup. By checking that the IRIS container is accepting connections on the JDBC port, we can confirm
+      # that IRIS can receive queries over JDBC and is running, since the SuperServer must be up in order for the former to be possible.
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/1972'"]
       interval: 5s
       retries: 100
       start_period: 20s
@@ -56,15 +60,15 @@ services:
   business360-frontend:
     image: irepo.intersystems.com/sds-docker-dev/totalview/frontend:${VERSION}
     hostname: business360-frontend
-    security_opt:             
+    security_opt:
     - seccomp:unconfined
-    privileged: true   
+    privileged: true
     depends_on:
     - business360-iris
     init: true
     ports:
     - "${CONF_FRONTEND_LOCAL_PORT}:80"
-    networks: 
+    networks:
       - default
 
   # This webgateway exists only so people can access the System Management Portal if needed
@@ -137,7 +141,11 @@ services:
         source: ./semanticsearch/volumes
         target: /volumes
     healthcheck:
-      test: ["CMD", "iris", "session", "IRIS", "-U", "VECTORDB", "##class(%Dictionary.ClassDefinition).%Exists(\"%Dictionary.ClassDefinition\")"]
+      # The irisHealth.sh script simply checks IRIS status via the qlist command, however this is not sufficient for our purposes.
+      # Services that depend on the IRIS container's health when initializing, like the orchestrator, need to be able to connect over JDBC
+      # and run queries upon startup. By checking that the IRIS container is accepting connections on the JDBC port, we can confirm
+      # that IRIS can receive queries over JDBC and is running, since the SuperServer must be up in order for the former to be possible.
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/1972'"]
       interval: 5s
       retries: 100
       start_period: 20s
