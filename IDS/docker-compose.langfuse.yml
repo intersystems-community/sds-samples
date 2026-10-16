@@ -99,6 +99,7 @@ services:
       - default
 
   minio:
+    # image: quay.io/minio/minio:RELEASE.2025-06-13T11-33-47Z
     image: ghcr.io/coollabsio/minio:RELEASE.2025-10-15T17-29-55Z
     restart: always
     entrypoint: sh
